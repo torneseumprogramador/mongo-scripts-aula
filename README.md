@@ -136,3 +136,195 @@ db.alunos.find({
         $in : ["Sistema de informação", "Engenharia Química"]
         }
 })
+
+
+# insert para teste
+db.alunos.insert({
+    nome : "Fernando",
+    data_nascimento : new Date(1994, 03, 26),
+    notas : [ 10, 4.5, 7],
+    curso : {
+        nome : "Sistema de informação"
+    }
+})
+
+# busca por nome do curso
+db.alunos.find({"curso.nome" : "Sistema de informação"})
+
+# find e update geral, errado
+db.alunos.update(
+    {"curso.nome" : "Sistema de informação"},
+    {
+        "curso.nome" : "Sistemas de informação"
+    }
+)
+
+# find e update somente do item, forma correta, somente o primeiro
+db.alunos.update(
+    {"curso.nome" : "Sistemas de informação"},
+    {
+        $set : {
+            "curso.nome" : "Sistemas de Informação"
+        }
+    }
+)
+
+# find e update somente do item, forma correta, todos os itens
+db.alunos.update(
+    {"curso.nome" : "Sistemas de informação"},
+    {
+        $set : 
+           {"curso.nome" : "Sistemas de Informação"}  
+        }, 
+      {
+        multi : true 
+      }
+)
+
+# find e update somente do item, forma correta, todos os itens, array
+db.alunos.update(
+    {"_id" : ObjectId("56cb0002b6d75ec12f75d3b5")},
+    {$set : {
+        {
+            "notas" : [
+                10,
+                9,
+                4.5,
+                8.5
+            ]
+        }    
+    }
+}
+
+# adicionando uma nova nota
+db.alunos.update(
+    {"_id" : ObjectId("56cb0002b6d75ec12f75d3b5")},
+    {
+        $push : {
+            notas : 8.5
+        }    
+    }
+)
+
+# push de multiplas notas
+db.alunos.update(
+    {"_id" : ObejctId("56cb0139b6d75ec12f75d3b6")},
+    {
+        $push : {
+            "notas" : {$each : [8.5, 3] }
+        }
+    }
+)
+
+# buscar alunos com nota x
+db.alunos.find(
+    {
+    "notas" : 8.5
+})
+
+# usar busca com notas maiores que 5
+db.alunos.find({
+    notas : { $gt : 5 }
+})
+
+
+# teste de insert para busca
+db.alunos.insert({
+    nome : "André",
+    data_nascimento : new Date(1991,01,25),
+    curso : {
+        nome : "Matemática"
+        },
+        notas : [ 7, 5, 9, 4.5 ]
+})
+
+db.alunos.insert({
+    nome : "Lúcia",
+    data_nascimento : new Date(1984,07,17),
+    curso : {
+        nome : "Matemática"
+        },
+        notas : [ 8, 9.5,  10 ]
+})
+
+
+# buscando 1 com nota maior que 5
+db.alunos.findOne({
+    notas : { $gt : 5}
+})
+
+# ordem crescente
+db.alunos.find().sort({"nome" : 1})
+
+# ordem decrescente
+db.alunos.find().sort({"nome" : -1})
+
+# limit 3
+db.alunos.find().sort({"nome" : 1}).limit(3)
+
+# busca por proximidade
+db.alunos.update(
+{ "_id" : ObjectId("56cb0139b6d75ec12f75d3b6") },
+{
+    $set : {
+    localizacao : {
+        endereco : "Rua Vergueiro, 3185",
+        cidade : "São Paulo",
+        coordinates : [-23.588213, -46.632356],
+        type : "Point"
+        }
+    }
+}
+)
+
+# criando indice
+db.alunos.aggregate([
+{
+    $geoNear : {
+        near : {
+            coordinates: [-23.5640265, -46.6527128],
+            type : "Point"
+        }
+
+    }
+}
+])
+
+db.alunos.createIndex({
+    localizacao : "2dsphere"
+})
+
+# acregando indice
+db.alunos.aggregate([
+{
+    $geoNear : {
+        near : {
+            coordinates: [-23.5640265, -46.6527128],
+            type : "Point"
+        },
+        distanceField : "distancia.calculada",
+        spherical : true
+    }
+}
+])
+
+db.alunos.createIndex({
+    localizacao : "2dsphere"
+})
+
+# acregando indice
+db.alunos.aggregate([
+{
+    $geoNear : {
+        near : {
+            coordinates: [-23.5640265, -46.6527128],
+            type : "Point"
+        },
+        distanceField : "distancia.calculada",
+        spherical : true,
+        num : 4
+    }
+},
+{ $skip :1 }
+])
+
