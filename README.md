@@ -18,10 +18,10 @@ alias "mongo= ~/mongodb/bin/mongo"
 alias "mongorestore= /Users/danilo/mongodb/bin/mongorestore"
 alias "mongodump= /Users/danilo/mongodb/bin/mongodump"
 
-//https://www.mongodb.com/pt-br/basics/create-database
+# https://www.mongodb.com/pt-br/basics/create-database
 show dbs
 
-//Para criar um banco de dados você usa o comando use. Se o banco de dados não existir, então o cluster do MongoDB irá criá-lo.
+# Para criar um banco de dados você usa o comando use. Se o banco de dados não existir, então o cluster do MongoDB irá criá-lo.
 use myshinynewdb
 
 
