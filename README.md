@@ -98,10 +98,7 @@ db.alunos.find({ "habilidades.nome" : "inglês" }).pretty()
 
 
 # busca com and
-db.alunos.find({
-    "curso.nome" : "Sistemas de informação",
-    "curso.nome" : "Engenharia Química"
-    })
+db.pedidos.find( { $and: [{nome : "Danilo"}, {valor_total: 10.99}] } )
 
 # buscar com or
 db.alunos.find({
