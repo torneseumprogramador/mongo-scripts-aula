@@ -135,6 +135,9 @@ db.alunos.find({
 })
 
 
+# Neste filtro retornamos uma coleção por parte do nome:
+db.pedidos.find({nome: /nilo/})
+
 # insert para teste
 db.alunos.insert({
     nome : "Fernando",
