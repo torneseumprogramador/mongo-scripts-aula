@@ -262,6 +262,22 @@ db.alunos.find().sort({"nome" : -1})
 # limit 3
 db.alunos.find().sort({"nome" : 1}).limit(3)
 
+
+# join
+https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+db.comments.aggregate({ $lookup:{ from:"users", localField:"uid", foreignField:"uid", as:"users_comments" } })
+
+db.authors.insert([ { _id: 'a1', name: { first: 'orlando', last: 'becerra' }, age: 27 }, { _id: 'a2', name: { first: 'mayra', last: 'sanchez' }, age: 21 } ]);
+db.categories.insert([ { _id: 'c1', name: 'sci-fi' }, { _id: 'c2', name: 'romance' } ]);
+db.books.insert([ { _id: 'b1', name: 'Groovy Book', category: 'c1', authors: ['a1'] }, { _id: 'b2', name: 'Java Book', category: 'c2', authors: ['a1','a2'] }, ]);
+db.lendings.insert([ { _id: 'l1', book: 'b1', date: new Date('01/01/11'), lendingBy: 'jose' }, { _id: 'l2', book: 'b1', date: new Date('02/02/12'), lendingBy: 'maria' } ]);
+db.books.find().forEach( function (newBook) { newBook.category = db.categories.findOne( { "_id": newBook.category } ); newBook.lendings = db.lendings.find( { "book": newBook._id } ).toArray(); newBook.authors = db.authors.find( { "_id": { $in: newBook.authors } } ).toArray(); db.booksReloaded.insert(newBook); } );
+db.booksReloaded.find().pretty()
+
+db.LeftTable.aggregate([ # connect all tables {"$lookup": { "from": "RightTable", "localField": "ID", "foreignField": "ID", "as": "R" }}, {"$unwind": "R"} ])
+db.LeftTable.aggregate([ # connect all tables {"$lookup": { "from": "RightTable", "localField": "ID", "foreignField": "ID", "as": "R" }}, {"$unwind": "R"}, # define conditionals + variables {"$project": { "midEq": {"$eq": ["$MID", "$R.MID"]}, "ID": 1, "MOB": 1, "MID": 1 }} ])
+
+
 # busca por proximidade
 db.alunos.update(
 { "_id" : ObjectId("56cb0139b6d75ec12f75d3b6") },
