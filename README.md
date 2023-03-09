@@ -1,4 +1,4 @@
-
+```shell
 # downnload mongo e descompactar
 curl https://fastdl.mongodb.org/osx/mongodb-macos-x86_64-5.0.6.tgz
 
@@ -354,3 +354,4 @@ db.alunos.aggregate([
 { $skip :1 }
 ])
 
+```
