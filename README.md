@@ -303,22 +303,22 @@ db.alunos.update(
 }
 )
 
-# criando indice
-db.alunos.aggregate([
-{
-    $geoNear : {
-        near : {
-            coordinates: [-23.5640265, -46.6527128],
-            type : "Point"
-        }
-
-    }
-}
-])
 
 db.alunos.createIndex({
     localizacao : "2dsphere"
 })
+
+
+# criando indice
+db.alunos.aggregate([
+   {
+     $geoNear: {
+        near: { type: "Point", coordinates: [-23.5640265, -46.6527128] },
+        distanceField: "distancia",
+        spherical: true
+     }
+   }
+])
 
 # acregando indice
 db.alunos.aggregate([
@@ -334,24 +334,18 @@ db.alunos.aggregate([
 }
 ])
 
-db.alunos.createIndex({
-    localizacao : "2dsphere"
-})
 
 # acregando indice
 db.alunos.aggregate([
-{
-    $geoNear : {
-        near : {
-            coordinates: [-23.5640265, -46.6527128],
-            type : "Point"
-        },
-        distanceField : "distancia.calculada",
-        spherical : true,
-        num : 4
-    }
-},
-{ $skip :1 }
+   {
+     $geoNear: {
+        near: { type: "Point", coordinates: [-23.5640265, -46.6527128] },
+        distanceField: "distancia.calculada",
+        spherical: true
+     }
+   },
+   { $skip: 1 },
+   { $limit: 4 }
 ])
 
 ```
